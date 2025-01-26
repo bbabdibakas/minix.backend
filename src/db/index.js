@@ -37,6 +37,18 @@ class Database {
             });
         });
     }
+
+    get(query, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.get(query, params, (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+    }
 }
 
 module.exports = new Database(databasePath)

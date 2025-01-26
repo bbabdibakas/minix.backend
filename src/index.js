@@ -18,14 +18,16 @@ const start = async () => {
         name TEXT NOT NULL,
         email TEXT NOT NULL,
         username TEXT NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        isActivated BOOLEAN DEFAULT 0,
+        activationLink TEXT NOT NULL
     )`;
 
     try {
         await database.runQuery(createTableSQL);
         console.log('Table "users" checked/created successfully.');
-    } catch (err) {
-        console.error('Error creating the table:', err);
+    } catch (error) {
+        console.error('Error creating the table:', error);
     }
 
     app.listen(port, () => {

@@ -4,12 +4,12 @@ const ApiError = require('../exceptions/ApiError')
 class UserController {
     async registration(req, res, next) {
         try {
-            const {name, email, username, password} = req.body
-            if (!name || !email || !username || !password) {
+            const {name, username, password} = req.body
+            if (!name || !username || !password) {
                 return next(ApiError.BadRequest('All fields are required'));
             }
 
-            const userData = await userService.registration(name, email, username, password)
+            const userData = await userService.registration(name, username, password)
             return res.status(200).json(userData)
         } catch (error) {
             next(error)

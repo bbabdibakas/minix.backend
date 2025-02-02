@@ -1,10 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const router = require('./router/index')
 const database = require('./db/index')
 const errorMiddleware = require('./middlewares/errorMiddleware')
 const app = express()
-const port = 8000
+const port = process.env.PORT || 8001
 
 app.use(cors())
 app.use(express.json())
@@ -14,19 +15,25 @@ app.use(errorMiddleware)
 const start = async () => {
     await database.connect()
 
-    const createTableSQL = `CREATE TABLE IF NOT EXISTS users (
+    const createUsersTable = `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        email TEXT NOT NULL,
         username TEXT NOT NULL,
-        password TEXT NOT NULL,
-        isActivated BOOLEAN DEFAULT 0,
-        activationLink TEXT NOT NULL
+        password TEXT NOT NULL
+    )`;
+
+    const createTokensTable = `CREATE TABLE IF NOT EXISTS tokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER NOT NULL,
+        refreshToken TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )`;
 
     try {
-        await database.runQuery(createTableSQL);
+        await database.runQuery(createUsersTable);
         console.log('Table "users" checked/created successfully.');
+        await database.runQuery(createTokensTable);
+        console.log('Table "tokens" checked/created successfully.');
     } catch (error) {
         console.error('Error creating the table:', error);
     }

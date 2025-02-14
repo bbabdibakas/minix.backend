@@ -1,4 +1,5 @@
 const userService = require('../services/userService');
+const profileService = require('../services/profileService');
 const ApiError = require('../exceptions/ApiError')
 
 class UserController {
@@ -10,6 +11,7 @@ class UserController {
             }
 
             const userData = await userService.registration(name, username, password)
+            await profileService.createProfile(name, username, userData.user.id)
             return res.status(200).json(userData)
         } catch (error) {
             next(error)

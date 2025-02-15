@@ -48,6 +48,18 @@ class Database {
             });
         });
     }
+
+    beginTransaction() {
+        return this.runQuery("BEGIN TRANSACTION;");
+    }
+
+    commitTransaction() {
+        return this.runQuery("COMMIT;");
+    }
+
+    rollbackTransaction() {
+        return this.runQuery("ROLLBACK;");
+    }
 }
 
 module.exports = new Database(databasePath)

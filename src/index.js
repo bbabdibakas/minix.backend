@@ -4,6 +4,7 @@ const cors = require('cors')
 const router = require('./router/index')
 const database = require('./db/index')
 const errorMiddleware = require('./middlewares/errorMiddleware')
+const initDatabase = require("./db/initDatabase");
 const app = express()
 const port = process.env.PORT || 8001
 
@@ -13,42 +14,7 @@ app.use('/api', router);
 app.use(errorMiddleware)
 
 const start = async () => {
-    await database.connect()
-
-    const createUsersTable = `CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL
-    )`;
-
-    const createTokensTable = `CREATE TABLE IF NOT EXISTS tokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER NOT NULL,
-        refreshToken TEXT NOT NULL,
-        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-    )`;
-
-    const createProfilesTables = `CREATE TABLE IF NOT EXISTS profiles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        username TEXT NOT NULL,
-        bio TEXT NOT NULL DEFAULT '',
-        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-    )`;
-
-    try {
-        await database.runQuery(createUsersTable);
-        console.log('Table "users" checked/created successfully.');
-        await database.runQuery(createTokensTable);
-        console.log('Table "tokens" checked/created successfully.');
-        await database.runQuery(createProfilesTables);
-        console.log('Table "profiles" checked/created successfully.');
-    } catch (error) {
-        console.error('Error creating the table:', error);
-    }
-
+    await initDatabase()
     app.listen(port, () => {
         console.log(`Server running on port: ${port}`)
     })

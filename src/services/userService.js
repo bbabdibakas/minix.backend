@@ -33,7 +33,7 @@ class UserService {
 
         const isPasswordValid = await bcrypt.compare(password, candidateUser.password);
         if (!isPasswordValid) {
-            throw ApiError.Unauthorized('Invalid username or password');
+            throw ApiError.BadRequest('Invalid username or password');
         }
 
         const {password: _, ...user} = candidateUser;

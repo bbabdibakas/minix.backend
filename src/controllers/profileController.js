@@ -30,6 +30,15 @@ class ProfileController {
             if (!Object.keys(updates).length) {
                 return next(ApiError.BadRequest('At least one field is required for update.'));
             }
+
+            if (updates.name?.trim() === '') {
+                return next(ApiError.BadRequest('Name cannot be empty.'));
+            }
+
+            if (updates.username?.trim() === '') {
+                return next(ApiError.BadRequest('Username cannot be empty.'));
+            }
+
             await database.beginTransaction()
 
             const profileData = await profileService.updateProfileById(id, updates);
